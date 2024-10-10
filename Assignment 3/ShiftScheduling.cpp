@@ -25,44 +25,46 @@ bool addLeadToOverlapping(Shift shift, const Set<Shift>& shifts){
     return false;
 }
 
-void highestValueScheduleForHelper(const Set<Shift>& shifts_to_choose, const Set<Shift>& current, Set<Shift>& best_shift,int remainHours){
-    if(shifts_to_choose.isEmpty()){
-        if(sumOfValue(current)>sumOfValue(best_shift)){
-            best_shift=current;
+
+Set<Shift> highestValueScheduleForHelper(const Set<Shift>& shifts_to_choose, const Set<Shift>& current, int remainHours) {
+    if (shifts_to_choose.isEmpty()) {
+        return current;
+    }
+
+    Shift task = shifts_to_choose.first();
+
+    if (addLeadToOverlapping(task, current) || lengthOf(task) > remainHours) {
+        return highestValueScheduleForHelper(shifts_to_choose - task, current, remainHours);
+    } else {
+
+        Set<Shift> withTask = highestValueScheduleForHelper(shifts_to_choose - task, current + task, remainHours - lengthOf(task));
+
+
+        Set<Shift> withoutTask = highestValueScheduleForHelper(shifts_to_choose - task, current, remainHours);
+
+
+        if (sumOfValue(withTask) > sumOfValue(withoutTask)) {
+            return withTask;
+        } else {
+            return withoutTask;
         }
-        return;
     }
-
-    Shift task=shifts_to_choose.first();
-    if(addLeadToOverlapping(task,current)||lengthOf(task)>remainHours){
-        // you have to not choose the task
-        highestValueScheduleForHelper(shifts_to_choose-task,current,best_shift,remainHours);
-    }else{
-        //choose the task;
-        highestValueScheduleForHelper(shifts_to_choose-task,current+task,best_shift,remainHours-lengthOf(task));
-
-        //not choose the task;
-        highestValueScheduleForHelper(shifts_to_choose-task,current,best_shift,remainHours);
-    }
-
 }
 
-
-
 Set<Shift> highestValueScheduleFor(const Set<Shift>& shifts, int maxHours) {
-    if(maxHours<0){
-        error("the max hour cannnot be negative.");
+    if (maxHours < 0) {
+        error("the max hour cannot be negative.");
     }
 
     Set<Shift> positive_shifts;
-    for(Shift task: shifts){
-        if(valueOf(task)>0){
+    for (Shift task : shifts) {
+        if (valueOf(task) > 0) {
             positive_shifts.add(task);
         }
     }
-    Set<Shift> best_strategy;
-    highestValueScheduleForHelper(positive_shifts,{},best_strategy,maxHours);
-    return best_strategy;
+
+
+    return highestValueScheduleForHelper(positive_shifts, {}, maxHours);
 }
 
 
