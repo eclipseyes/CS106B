@@ -43,8 +43,8 @@ Vector<DataPoint> combine(const Vector<Vector<DataPoint>>& sequences) {
         return emptySequence;
     }
     //two groups:   0 ~ half_sequence_index-1 and  half_sequence_index ~ sequences.size()-1
-    Vector<Vector<DataPoint>> first=sequences.subList(0,sequences.size()-1);
-    Vector<Vector<DataPoint>> second=sequences.subList(sequences.size()-1);
+    Vector<Vector<DataPoint>> first=sequences.subList(0,sequences.size()/2);
+    Vector<Vector<DataPoint>> second=sequences.subList(sequences.size()/2);
 
     //recursively combine
     Vector<DataPoint> firstCombined=combine(first);
