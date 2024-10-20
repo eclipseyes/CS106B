@@ -2,10 +2,6 @@
 #include "Combine.h"
 using namespace std;
 
-int max(int a, int b){
-    return a>b?a:b;
-}
-
 
 Vector<DataPoint> merge( Vector<DataPoint> first, Vector<DataPoint> second){
     int first_index=0;
